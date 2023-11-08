@@ -1,15 +1,10 @@
 package com.rama.jumbleword_kotlin_l3
 
 import android.app.AlertDialog
-import android.content.Intent
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rama.jumbleword_kotlin_l3.databinding.ActivityGameBinding
@@ -20,22 +15,16 @@ import java.util.Random
 class GamePlayActivity : AppCompatActivity() {
     var alertDialog: AlertDialog.Builder? = null
     var db: SQLiteDatabase? = null
-    var n: String? = null
-    var lv: String? = null
-    var s = ""
+    var level: String? = null
     var quesWord = ArrayList<String?>()
-    var score = 0
-    var chances = 3
-    var c: Cursor? = null
     lateinit var gameBinding: ActivityGameBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gameBinding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(gameBinding.root)
-        n = intent.getStringExtra("name")
-        gameBinding.name.text = "Player: $n"
-        lv = intent.getStringExtra("level")
-        gameBinding.lvdisp.text = "Level: $lv"
+        gameBinding.name.text = "Player: ${intent.getStringExtra("name")}"
+        level = intent.getStringExtra("level")
+        gameBinding.lvdisp.text = "Level: $level"
         createTable()
         insertIntoBeginner()
         insertIntoIntermediate()
@@ -226,10 +215,9 @@ class GamePlayActivity : AppCompatActivity() {
 
     fun fetchWords() {
         try {
-            c = db!!.rawQuery("select * from jumbleword where level='$lv'", null)
-            while (c!!.moveToNext()) {
-                s = c!!.getString(0)
-                quesWord.add(s)
+           val cursor = db!!.rawQuery("select * from jumbleword where level='$level'", null)
+            while (cursor!=null && cursor.moveToNext()) {
+                quesWord.add(cursor.getString(0))
             }
             Collections.shuffle(quesWord)
         } catch (e: Exception) {
@@ -238,6 +226,8 @@ class GamePlayActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        var chances = 3
+        var score = 0
         val str = quesWord.toTypedArray()
         gameBinding.attemp.text = "Attempts left: $chances"
         gameBinding.score.text = "Score: $score"
