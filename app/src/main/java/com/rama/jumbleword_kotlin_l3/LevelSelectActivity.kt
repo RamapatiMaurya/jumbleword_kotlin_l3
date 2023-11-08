@@ -9,28 +9,22 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rama.jumbleword_kotlin_l3.databinding.ActivityGameBinding
+import com.rama.jumbleword_kotlin_l3.databinding.ActivityLevelBinding
 
 
 class LevelSelectActivity : AppCompatActivity() {
     var adb: AlertDialog.Builder? = null
-    var radio1: RadioButton? = null
-    var radio2: RadioButton? = null
-    var radio3: RadioButton? = null
-    var myIntent: Intent? = null
     var name: String? = null
-    var tv: TextView? = null
 
+    lateinit var levelBinding: ActivityLevelBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_level)
-        tv = findViewById<View>(R.id.greetings) as TextView
-        radio1 = findViewById<View>(R.id.radio0) as RadioButton
-        radio2 = findViewById<View>(R.id.radio1) as RadioButton
-        radio3 = findViewById<View>(R.id.radio2) as RadioButton
+        levelBinding = ActivityLevelBinding.inflate(layoutInflater)
+        setContentView(levelBinding.root)
         adb = AlertDialog.Builder(this)
-        myIntent = getIntent()
-        name = myIntent?.getStringExtra("name")
-        tv!!.text = "Welcome $name"
+        name = intent?.getStringExtra("name")
+        levelBinding.greetings.text = "Welcome $name"
         val window = this.window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -41,7 +35,7 @@ class LevelSelectActivity : AppCompatActivity() {
     }
 
     fun beginner(v: View?) {
-        Toast.makeText(this@LevelSelectActivity, radio1!!.text.toString() + " level", Toast.LENGTH_SHORT)
+        Toast.makeText(this@LevelSelectActivity, levelBinding.radio0.text.toString() + " level", Toast.LENGTH_SHORT)
             .show()
         val beginer = Intent(this@LevelSelectActivity, GamePlayActivity::class.java)
         beginer.putExtra("name", name)
@@ -50,7 +44,7 @@ class LevelSelectActivity : AppCompatActivity() {
     }
 
     fun intermediate(v: View?) {
-        Toast.makeText(this@LevelSelectActivity, radio2!!.text.toString() + " level", Toast.LENGTH_SHORT)
+        Toast.makeText(this@LevelSelectActivity, levelBinding.radio1.text.toString() + " level", Toast.LENGTH_SHORT)
             .show()
         val intermediate = Intent(this@LevelSelectActivity, GamePlayActivity::class.java)
         intermediate.putExtra("name", name)
@@ -59,7 +53,7 @@ class LevelSelectActivity : AppCompatActivity() {
     }
 
     fun expert(v: View?) {
-        Toast.makeText(this@LevelSelectActivity, radio3!!.text.toString() + " level", Toast.LENGTH_SHORT)
+        Toast.makeText(this@LevelSelectActivity, levelBinding.radio2.text.toString() + " level", Toast.LENGTH_SHORT)
             .show()
         val expert = Intent(this@LevelSelectActivity, GamePlayActivity::class.java)
         expert.putExtra("name", name)
