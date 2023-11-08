@@ -13,7 +13,6 @@ import com.rama.jumbleword_kotlin_l3.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     var string: String? = null
-    var levelIntent: Intent? = null
     var musicIntent: Intent? = null
 
     lateinit var binding: ActivityMainBinding
@@ -30,13 +29,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun moveToNextActivity(v: View?) {
-        levelIntent = Intent(this@MainActivity, LevelSelectActivity::class.java)
+        val levelIntent = Intent(this@MainActivity, LevelSelectActivity::class.java)
         string = binding.editText1.text.toString().trim { it <= ' ' }
         if (string == "") {
             Toast.makeText(this@MainActivity, "Please enter your Name", Toast.LENGTH_LONG).show()
             binding.editText1.setText("")
         } else {
-            levelIntent!!.putExtra("name", binding.editText1.text.toString())
+            levelIntent.putExtra("name", binding.editText1.text.toString())
             startActivity(levelIntent)
         }
     }
