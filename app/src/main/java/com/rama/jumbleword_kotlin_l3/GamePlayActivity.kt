@@ -12,21 +12,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rama.jumbleword_kotlin_l3.databinding.ActivityGameBinding
 import java.util.Collections
 import java.util.Random
 
 
 class GamePlayActivity : AppCompatActivity() {
-    var adb: AlertDialog.Builder? = null
+    var alertDialog: AlertDialog.Builder? = null
     var db: SQLiteDatabase? = null
-    var name: TextView? = null
-    var levelText: TextView? = null
-    var jumbleWord: TextView? = null
-    var points: TextView? = null
-    var attemptsLeft: TextView? = null
-    var answerText: EditText? = null
-    var b: Button? = null
-    var i: Intent? = null
     var n: String? = null
     var lv: String? = null
     var s = ""
@@ -34,27 +27,21 @@ class GamePlayActivity : AppCompatActivity() {
     var score = 0
     var chances = 3
     var c: Cursor? = null
+    lateinit var gameBinding: ActivityGameBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
-        jumbleWord = findViewById<View>(R.id.jumbled) as TextView
-        attemptsLeft = findViewById<View>(R.id.attemp) as TextView
-        answerText = findViewById<View>(R.id.ans) as EditText
-        levelText = findViewById<View>(R.id.lvdisp) as TextView
-        points = findViewById<View>(R.id.score) as TextView
-        name = findViewById<View>(R.id.name) as TextView
-        b = findViewById<View>(R.id.match) as Button
-        i = intent
-        n = i!!.getStringExtra("name")
-        name!!.text = "Player: $n"
-        lv = i!!.getStringExtra("level")
-        levelText!!.text = "Level: $lv"
+        gameBinding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(gameBinding.root)
+        n = intent.getStringExtra("name")
+        gameBinding.name.text = "Player: $n"
+        lv = intent.getStringExtra("level")
+        gameBinding.lvdisp.text = "Level: $lv"
         createTable()
         insertIntoBeginner()
         insertIntoIntermediate()
         insertIntoExpert()
         fetchWords()
-        adb = AlertDialog.Builder(this)
+        alertDialog = AlertDialog.Builder(this)
         val window = this.window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -252,43 +239,43 @@ class GamePlayActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val str = quesWord.toTypedArray()
-        attemptsLeft!!.text = "Attempts left: $chances"
-        points!!.text = "Score: $score"
-        jumbleWord!!.text = wordJumble(str[0])
-        b!!.setOnClickListener(object : View.OnClickListener {
+        gameBinding.attemp.text = "Attempts left: $chances"
+        gameBinding.score.text = "Score: $score"
+        gameBinding.jumbled.text = wordJumble(str[0])
+        gameBinding.match.setOnClickListener(object : View.OnClickListener {
             var j = 0
             var len = str.size
             override fun onClick(v: View) {
                 try {
-                    if (answerText!!.text.toString().trim { it <= ' ' }
+                    if (gameBinding.ans.text.toString().trim { it <= ' ' }
                             .equals(str[j], ignoreCase = true)) {
                         score++
                         if (score == len) {
-                            adb!!.setTitle("You Won!")
-                            adb!!.setMessage("Score: $score")
-                            adb!!.setPositiveButton(
+                            alertDialog!!.setTitle("You Won!")
+                            alertDialog!!.setMessage("Score: $score")
+                            alertDialog!!.setPositiveButton(
                                 "Okay"
                             ) { dialog, which -> finish() }
-                            adb!!.show()
+                            alertDialog!!.show()
                         }
                         j++
-                        points!!.text = "Score: $score"
-                        jumbleWord!!.text = wordJumble(str[j])
-                        answerText!!.setText("")
+                        gameBinding.score.text = "Score: $score"
+                        gameBinding.jumbled.text = wordJumble(str[j])
+                        gameBinding.ans.setText("")
                     } else {
                         chances--
                         Toast.makeText(applicationContext, "Wrong Answer", Toast.LENGTH_SHORT)
                             .show()
                         if (chances == 0) {
-                            adb!!.setTitle("You Lose!")
-                            adb!!.setMessage("Score: $score")
-                            adb!!.setPositiveButton(
+                            alertDialog!!.setTitle("You Lose!")
+                            alertDialog!!.setMessage("Score: $score")
+                            alertDialog!!.setPositiveButton(
                                 "Okay"
                             ) { dialog, which -> finish() }
-                            adb!!.show()
+                            alertDialog!!.show()
                         }
-                        attemptsLeft!!.text = "Attempts left: $chances"
-                        answerText!!.setText("")
+                        gameBinding.attemp.text = "Attempts left: $chances"
+                        gameBinding.ans.setText("")
                     }
                 } catch (e: Exception) {
                 }
@@ -297,13 +284,13 @@ class GamePlayActivity : AppCompatActivity() {
     }
 
     fun back(v: View?) {
-        adb!!.setTitle("Go Back?")
-        adb!!.setMessage("Are you sure you want to go back?")
-        adb!!.setNegativeButton(
+        alertDialog!!.setTitle("Go Back?")
+        alertDialog!!.setMessage("Are you sure you want to go back?")
+        alertDialog!!.setNegativeButton(
             "Yes"
         ) { dialog, which -> finish() }
-        adb!!.setPositiveButton("No", null)
-        adb!!.show()
+        alertDialog!!.setPositiveButton("No", null)
+        alertDialog!!.show()
     }
 
     companion object {
