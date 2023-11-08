@@ -39,18 +39,6 @@
         <activity android:name=".GamePlayActivity"
             android:label="Game"
             android:exported="false">
-            <intent-filter>
-                <action android:name="com.rama.jumbleword_kotlin_l3.beginner"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.rama.jumbleword_kotlin_l3.intermediate"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.rama.jumbleword_kotlin_l3.expert"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
 
         <service android:name=".MusicService"/>
