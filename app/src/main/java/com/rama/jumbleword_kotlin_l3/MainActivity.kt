@@ -8,18 +8,19 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rama.jumbleword_kotlin_l3.databinding.ActivityLevelBinding
+import com.rama.jumbleword_kotlin_l3.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    var et: EditText? = null
     var string: String? = null
     var levelIntent: Intent? = null
     var musicIntent: Intent? = null
-    var quit: Button? = null
+
+    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        quit = findViewById<View>(R.id.quit) as Button
-        et = findViewById<View>(R.id.editText1) as EditText
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         musicIntent = Intent(this, MusicService::class.java)
         startService(musicIntent)
         val window = this.window
@@ -30,12 +31,12 @@ class MainActivity : AppCompatActivity() {
 
     fun moveToNextActivity(v: View?) {
         levelIntent = Intent(this@MainActivity, LevelSelectActivity::class.java)
-        string = et!!.text.toString().trim { it <= ' ' }
+        string = binding.editText1.text.toString().trim { it <= ' ' }
         if (string == "") {
             Toast.makeText(this@MainActivity, "Please enter your Name", Toast.LENGTH_LONG).show()
-            et!!.setText("")
+            binding.editText1.setText("")
         } else {
-            levelIntent!!.putExtra("name", et!!.text.toString())
+            levelIntent!!.putExtra("name", binding.editText1.text.toString())
             startActivity(levelIntent)
         }
     }
